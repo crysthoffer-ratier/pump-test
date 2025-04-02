@@ -75,7 +75,9 @@ def csv_to_json(file_path: Path) -> bool:
     return False
 
 
-def append_to_file(file_path: Path, data: list) -> None:
+def append_to_file(data: list) -> None:
+    file_path = path / csv_file
+
     try:
         with open(file_path, mode="a", newline="") as file:
             debug_message(f"Appending data to {file_path}...")
