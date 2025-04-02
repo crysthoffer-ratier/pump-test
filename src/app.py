@@ -8,6 +8,8 @@ from pump.standard import read_data_from_standard_pump
 
 from gpiozero import OutputDevice
 
+import utils.file_utils as file_utils
+
 # Initialize relay connected to GPIO pin 17
 # relay1 = OutputDevice(17)
 
@@ -50,23 +52,6 @@ def create_file(f: str) -> bool:
             return True
     except Exception as e:
         debug_message(f"Error creating file: {e}")
-        return False
-
-
-def create_file1(f: str) -> bool:
-    """
-    Creates a new file if it doesn't exist.
-
-    Args:
-        f (str): The file path to create.
-
-    Returns:
-        bool: Returns True if the file was created, False if it already exists.
-    """
-    try:
-        return open(f, "x")
-    except Exception as e:
-        debug_message(e)
         return False
 
 
@@ -127,36 +112,33 @@ def debug_message(msg: str) -> None:
         print(f"[DEBUG]: {msg}")
 
 
-def main() -> None:
+def main1() -> None:  
     """
     Main function that runs the script, creates the CSV file (if not exists),
     and appends timestamped flowrate data to it.
     """
-    csv_file_name = "data.csv"
-    csv_file_path = Path(f"data/{csv_file_name}").resolve()
-    json_file_name = "data.json"
-    json_file_path = Path(f"data/{json_file_name}").resolve()
 
+    file_utils.run_file_checks();
+    exit()
+    
     start_time = time.time()
 
-    if create_file(csv_file_path):
+    while True:
+        print("Checking...")
+        elapsed_time = time.time() - start_time
 
-        while True:
-            print("Checking...")
-            elapsed_time = time.time() - start_time
+        if elapsed_time >= 1:
+            print("Collecting data...")
 
-            if elapsed_time >= 1:
-                print("Collecting data...")
+            carb_data = read_data_from_carb_pump()
+            standard_data = read_data_from_standard_pump()
+            print(carb_data)
+            print(standard_data)
+            append_to_file(csv_file_path, carb_data)
 
-                carb_data = read_data_from_carb_pump()
-                standard_data = read_data_from_standard_pump()
-                print(carb_data)
-                print(standard_data)
-                append_to_file(csv_file_path, carb_data)
+            time.sleep(0.1)  # Small delay to prevent CPU overload
 
-                time.sleep(0.1)  # Small delay to prevent CPU overload
-
-            time.sleep(2)
+        time.sleep(2)
 
             # csv_to_json(csv_file_path, json_file_path)
 
@@ -164,6 +146,8 @@ def main() -> None:
     # time.sleep(3)
 
 
+def main():
+    file_utils.run_file_checks()
+
 if __name__ == "__main__":
-    print(__name__)
     main()
