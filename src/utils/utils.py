@@ -1,4 +1,26 @@
 import datetime
+import json
+import logging
+
+from pathlib import Path
+
+path = Path(f"src").resolve()
+
+def read_config_file() -> dict:
+     # Get the current directory of the script, which is inside the src directory
+    script_dir = Path(__file__).resolve().parent.parent  # This will give the directory inside src
+    file_path = script_dir / 'config.json'
+
+    print(f"Looking for config file at: {file_path}")
+
+    try:
+        with open(file_path) as f:
+            return json.load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Configuration file '{file_path}' not found.")
+    except json.JSONDecodeError:
+        raise ValueError(f"Error decoding JSON in the configuration file '{file_path}'.")
+
 
 def get_dates() -> datetime:
     """

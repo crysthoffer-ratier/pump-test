@@ -11,7 +11,8 @@ path = Path(f"data").resolve()
 def run_file_checks() -> bool:
     debug_message("Running file checks...")
 
-    file_path = path / csv_file
+    script_dir = Path(__file__).resolve().parent.parent.parent  # This will give the directory inside src
+    file_path = script_dir / "data" / csv_file
 
     if not _check_file(file_path):
         return _create_file(file_path)
