@@ -1,11 +1,35 @@
-from gpiozero import DigitalInputDevice
+from gpiozero import OutputDevice,DigitalInputDevice
+from time import sleep
 import time
+
+BLACK = '\033[30m'
+RED = '\033[31m'
+GREEN = '\033[32m'
+YELLOW = '\033[33m' # orange on some systems
+BLUE = '\033[34m'
+MAGENTA = '\033[35m'
+CYAN = '\033[36m'
+LIGHT_GRAY = '\033[37m'
+DARK_GRAY = '\033[90m'
+BRIGHT_RED = '\033[91m'
+BRIGHT_GREEN = '\033[92m'
+BRIGHT_YELLOW = '\033[93m'
+BRIGHT_BLUE = '\033[94m'
+BRIGHT_MAGENTA = '\033[95m'
+BRIGHT_CYAN = '\033[96m'
+WHITE = '\033[97m'
+BOLD = '\033[1m'
+
+RESET = '\033[0m' # called to return to standard terminal text color
+
+# Set up the GPIO pin for controlling the relay
+relay = OutputDevice(27)
 
 # GPIO pin where the signal is connected
 signal_pin = 17
 
 # Pulses per liter (example value, check the datasheet for your flow meter)
-pulses_per_liter = 1000  # This is just an example, you'll need the correct value from the datasheet
+pulses_per_liter = 760  # This is just an example, you'll need the correct value from the datasheet
 
 # Set up the flow meter signal as a digital input
 flow_sensor = DigitalInputDevice(signal_pin, pull_up=True)
@@ -21,11 +45,14 @@ def on_pulse():
     pulse_count += 1
 
 # Attach event to trigger on pulse detection
-flow_sensor.when_activated = on_pulse
+flow_sensor.when_activated = on_pulse    
 
 # Main loop to calculate flow rate and total volume
 try:
+    
+    relay.on()
     while True:
+        
         # Calculate elapsed time
         elapsed_time = time.time() - start_time
         
@@ -34,14 +61,13 @@ try:
             flow_rate = (pulse_count / pulses_per_liter) * 60  # Flow rate in liters per minute (L/min)
             total_volume += pulse_count / pulses_per_liter  # Add the volume of liquid measured in the last second
 
-            print(f"Flow Rate: {flow_rate:.2f} L/min")
-            print(f"Total Volume: {total_volume:.2f} Liters")
-
             # Reset pulse count and time for next calculation
             pulse_count = 0
             start_time = time.time()
-        
-        time.sleep(0.1)  # Small delay to prevent CPU overload
 
+            print(f"Flow Rate: {flow_rate:.4f} L/min")
+            print(f"{BOLD}{BRIGHT_RED}Total Volume: {BRIGHT_GREEN}{total_volume:.4f} Liters")
+            time.sleep(0.2)
+            
 except KeyboardInterrupt:
     print("Program stopped.")

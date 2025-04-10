@@ -1,4 +1,4 @@
-from gpiozero import DigitalInputDevice
+from gpiozero import DigitalInputDevice, OutputDevice
 import time
 import random
 
@@ -7,7 +7,7 @@ pump_name = "CARBONATOR_PUMP"
 signal_pin = 17
 
 # Pulses per liter (example value, check the datasheet for your flow meter)
-pulses_per_liter = 1000  # This is just an example, you'll need the correct value from the datasheet
+pulses_per_liter = 760  # This is just an example, you'll need the correct value from the datasheet
 
 # Set up the flow meter signal as a digital input
 flow_sensor = DigitalInputDevice(signal_pin, pull_up=True)
@@ -24,20 +24,62 @@ def on_pulse():
 # Attach event to trigger on pulse detection
 flow_sensor.when_activated = on_pulse
 
-def read_data_from_carb_pump() -> list:
-    global pulse_count, total_volume  # Declare global variables
+def read_data_from_carb_pump_test() -> list:
     start_time = time.time()
 
-    flow_rate = (pulse_count / pulses_per_liter) * 60  # Flow rate in liters per minute (L/min)
-    total_volume += pulse_count / pulses_per_liter  # Add the volume of liquid measured in the last second
+    global pulse_count
 
-    flow_rate = random.uniform(1.22, 1.47)
-    total_volume += random.uniform(0.10, 0.14)
+    total_volume = 0.0
 
-    # Reset pulse count and time for next calculation
-    pulse_count = 0
+    while True:
+        # Calculate elapsed time
+        elapsed_time = time.time() - start_time
+        
+        # Every second, calculate the flow rate and total volume
+        if elapsed_time >= 1:
+            flow_rate = (pulse_count / pulses_per_liter) * 60  # Flow rate in liters per minute (L/min)
+            total_volume += pulse_count / pulses_per_liter  # Add the volume of liquid measured in the last second
+
+            #print(f"Flow Rate: {flow_rate:.4f} L/min")
+            #print(f"Total Volume: {total_volume:.4f} Liters")
+
+            # Stop if the total volume is >= 0.14 liters
+            if total_volume >= 0.0014:
+                print("Total volume reached 0.14 liters. Stopping.")
+                break
+
+            # Reset pulse count and time for next calculation
+            pulse_count = 0
+            start_time = time.time()
+
+        time.sleep(0.1)  # Small delay to prevent CPU overload
 
     end_time = time.time()
     elapsed_time_ms = (end_time - start_time) * 1000  # Convert seconds to milliseconds
-    #return f"{flow_rate:.4f}", f"{total_volume:.4f}"
+
     return [pump_name, start_time, end_time, f"{elapsed_time_ms:.4f}", flow_rate, total_volume]
+
+
+def read_data_from_carb_pump() -> list:
+    global pulse_count, total_volume
+
+    try:
+        start_time = time.time()
+
+        flow_rate = (pulse_count / pulses_per_liter) * 60  # Flow rate in liters per minute (L/min)
+        total_volume += pulse_count / pulses_per_liter  # Add the volume of liquid measured in the last second
+
+        end_time = time.time()
+        elapsed_time_ms = (end_time - start_time) * 1000  # Convert seconds to milliseconds
+
+        print(f"Flow Rate: {flow_rate:.2f} L/min")
+        print(f"Total Volume: {total_volume:.2f} Liters")
+
+        # Reset pulse count and time for next calculation
+        pulse_count = 0
+        total_volume = 0.0
+
+        #return [pump_name, start_time, end_time, f"{elapsed_time_ms:.4f}", flow_rate, total_volume]
+    except Exception as e:
+        print(e)
+    
