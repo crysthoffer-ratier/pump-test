@@ -14,27 +14,13 @@ The goal of this project is to run two pumps over extended periods and monitor t
   - **Timed Cycle**: Pumps run for 3 seconds, pause for 2 seconds
 - Logs run data to a CSV file, including:
   - Timestamp
-  - Pump status (ON/OFF)
   - Runtime duration
-
-## 🚀 Getting Started
-
-> **Note**: Setup instructions for wiring and installing dependencies will be added in a future version.
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/pump-longevity-tester.git
-   cd pump-longevity-tester
-   ```
-
-2. Run the script:
-   ```bash
-   python3 pump_tester.py
-   ```
+  - Flow rate
+  - Volume
 
 ## 📁 Logged Data
 
-The script outputs a CSV file (e.g., `pump_log.csv`) that contains time-series data of pump activity. This can be used for further analysis or troubleshooting.
+The script outputs a CSV file (e.g., `data/data.csv`) that contains time-series data of pump activity. This can be used for further analysis or troubleshooting.
 
 ## 📌 To-Do
 
