@@ -1,4 +1,14 @@
 {
-    "PUMP_ON_TIME": 3,
-    "PUMP_OFF_TIME": 2
+    "PROD": {
+        "DEBUG_MODE": false,
+        "PUMP_ON_TIME": 3,
+        "PUMP_OFF_TIME": 2,
+        "VOLUME": 14
+    },
+    "TEST": {
+        "DEBUG_MODE": true,
+        "PUMP_ON_TIME": 3,
+        "PUMP_OFF_TIME": 2,
+        "VOLUME": 14
+    }
 }

@@ -1,17 +1,18 @@
 import datetime
 import json
 import logging
+import utils.debug_utils as debug_utils
 
 from pathlib import Path
 
 path = Path(f"src").resolve()
 
-def read_config_file() -> dict:
-     # Get the current directory of the script, which is inside the src directory
-    script_dir = Path(__file__).resolve().parent.parent  # This will give the directory inside src
+
+def read_config_file() -> dict:     
+    script_dir = Path(__file__).resolve().parent.parent
     file_path = script_dir / 'config.json'
 
-    print(f"Looking for config file at: {file_path}")
+    #debug_utils.debug_message(f"Looking for config file at: {file_path}", logging.INFO)
 
     try:
         with open(file_path) as f:

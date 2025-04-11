@@ -23,7 +23,7 @@ BOLD = '\033[1m'
 RESET = '\033[0m' # called to return to standard terminal text color
 
 # Set up the GPIO pin for controlling the relay
-relay = OutputDevice(27)
+#relay = OutputDevice(27)
 
 # GPIO pin where the signal is connected
 signal_pin = 17
@@ -47,36 +47,37 @@ def on_pulse():
 # Attach event to trigger on pulse detection
 flow_sensor.when_activated = on_pulse    
 
-# Main loop to calculate flow rate and total volume
-try:
-    
-    
-    while True:
-        relay.on()
-        # Calculate elapsed time
-        elapsed_time = time.time() - start_time
+def test_no_stop():
+    # Main loop to calculate flow rate and total volume
+    try:
         
-        # Every second, calculate the flow rate and total volume
-        #if elapsed_time >= 1:
-        flow_rate = (pulse_count / pulses_per_liter) * 60  # Flow rate in liters per minute (L/min)
-        total_volume += pulse_count / pulses_per_liter  # Add the volume of liquid measured in the last second
+        
+        while True:
+            #relay.on()
+            # Calculate elapsed time
+            elapsed_time = time.time() - start_time
+            
+            # Every second, calculate the flow rate and total volume
+            #if elapsed_time >= 1:
+            flow_rate = (pulse_count / pulses_per_liter) * 60  # Flow rate in liters per minute (L/min)
+            total_volume += pulse_count / pulses_per_liter  # Add the volume of liquid measured in the last second
 
-        # Stop if the total volume is >= 0.14 liters
-        #if total_volume >= 0.0014:
-            #print("Total volume reached 0.14 liters. Stopping.")
-            #break
+            # Stop if the total volume is >= 0.14 liters
+            #if total_volume >= 0.0014:
+                #print("Total volume reached 0.14 liters. Stopping.")
+                #break
 
-        # Reset pulse count and time for next calculation
-        pulse_count = 0
-        start_time = time.time()
+            # Reset pulse count and time for next calculation
+            pulse_count = 0
+            start_time = time.time()
 
-        # print(f"Flow Rate: {flow_rate:.4f} L/min")
-        print(f"{BOLD}{BRIGHT_RED}Total Volume: {BRIGHT_GREEN}{total_volume:.4f} Liters")
-        time.sleep(3)
-        # Small delay to prevent CPU overloa
-        relay.off()
-        time.sleep(2)
-        total_volume = 0.0
+            # print(f"Flow Rate: {flow_rate:.4f} L/min")
+            print(f"{BOLD}{BRIGHT_RED}Total Volume: {BRIGHT_GREEN}{total_volume:.4f} Liters")
+            time.sleep(3)
+            # Small delay to prevent CPU overloa
+            #relay.off()
+            time.sleep(2)
+            total_volume = 0.0
 
-except KeyboardInterrupt:
-    print("Program stopped.")
+    except KeyboardInterrupt:
+        print("Program stopped.")

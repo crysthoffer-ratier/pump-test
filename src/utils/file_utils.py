@@ -1,5 +1,6 @@
 import json, csv
-from utils.debug_utils import debug_message
+import logging
+import utils.debug_utils as debug_utils
 
 from pathlib import Path
 
@@ -8,8 +9,8 @@ json_file = "data.json"
 path = Path(f"data").resolve()
 
 
-def run_file_checks() -> bool:
-    debug_message("Running file checks...")
+def run_file_checks() -> bool:    
+    debug_utils.debug_message("Running file checks...", logging.INFO)
 
     script_dir = Path(__file__).resolve().parent.parent.parent  # This will give the directory inside src
     file_path = script_dir / "data" / csv_file
@@ -22,17 +23,17 @@ def run_file_checks() -> bool:
 
 def _check_file(file_path: Path) -> bool:
     if file_path.exists():
-        debug_message(f"File '{file_path}' already exists.")
+        debug_utils.debug_message(f"File '{file_path}' already exists.", logging.INFO)
         return True
 
-    debug_message(f"File '{file_path}' does not exist.")
+    debug_utils.debug_message(f"File '{file_path}' does not exist.", logging.INFO)
     return False
 
 
 def _create_file(file_path: Path) -> bool:
     try:
         with open(file_path, mode="w", newline="") as file:
-            debug_message("Creating file...")
+            debug_utils.debug_message("Creating file...", logging.INFO)
 
             csv_header = [
                 "pump",
@@ -45,10 +46,10 @@ def _create_file(file_path: Path) -> bool:
             writer = csv.writer(file)
             writer.writerow(csv_header)  # Write the header
 
-            debug_message("Done!")
+            debug_utils.debug_message("Done!", logging.INFO)
             return True
     except Exception as e:
-        debug_message(f"Error creating file: {e}")
+        debug_utils.debug_message(f"Error creating file: {e}", logging.INFO)
         return False
 
 
@@ -62,16 +63,16 @@ def csv_to_json(file_path: Path) -> bool:
         with open(json_file_path, mode="w", encoding="utf-8") as file:
             json.dump(rows, file, indent=4)
 
-        debug_message(f"CSV data successfully converted to JSON at {json_file_path}.")
+        debug_utils.debug_message(f"CSV data successfully converted to JSON at {json_file_path}.")
         return True
     except FileNotFoundError:
-        debug_message(f"Error: The file '{file_path}' was not found.")
+        debug_utils.debug_message(f"Error: The file '{file_path}' was not found.", logging.INFO)
     except json.JSONDecodeError as e:
-        debug_message(f"Error: Failed to decode JSON data. {e}")
+        debug_utils.debug_message(f"Error: Failed to decode JSON data. {e}", logging.INFO)
     except csv.Error as e:
-        debug_message(f"Error: Failed to read CSV file. {e}")
+        debug_utils.debug_message(f"Error: Failed to read CSV file. {e}", logging.INFO)
     except Exception as e:
-        debug_message(f"Unexpected error: {e}")
+        debug_utils.debug_message(f"Unexpected error: {e}", logging.INFO)
 
     return False
 
@@ -81,13 +82,13 @@ def append_to_file(data: list) -> None:
 
     try:
         with open(file_path, mode="a", newline="") as file:
-            debug_message(f"Appending data to {file_path}...")
+            debug_utils.debug_message(f"Appending data to {file_path}...")
 
             writer = csv.writer(file)
             writer.writerow(data)
 
-            debug_message("Data appended successfully.")
+            debug_utils.debug_message("Data appended successfully.")
     except (OSError, IOError) as e:
-        debug_message(f"File operation error: {e}")
+        debug_utils.debug_message(f"File operation error: {e}", logging.INFO)
     except Exception as e:
-        debug_message(e)
+        debug_utils.debug_message(e)
