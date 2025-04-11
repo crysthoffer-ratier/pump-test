@@ -1,10 +1,12 @@
 import json, csv
 import logging
 import utils.debug_utils as debug_utils
+from datetime import datetime
 
 from pathlib import Path
 
-csv_file = "data.csv"
+# csv_file = "data.csv"
+csv_file = f"{datetime.now().strftime('%Y-%m-%d')}.csv"
 json_file = "data.json"
 path = Path(f"data").resolve()
 
@@ -79,6 +81,8 @@ def csv_to_json(file_path: Path) -> bool:
 
 def append_to_file(data: list) -> None:
     file_path = path / csv_file
+
+    run_file_checks()
 
     try:
         with open(file_path, mode="a", newline="") as file:
