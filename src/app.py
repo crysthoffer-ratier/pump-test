@@ -21,6 +21,10 @@ def main():
 
                 time.sleep(config["PROD"]["PUMP_ON_TIME"])
                 
+                pump = read_data_from_carb_pump()
+
+                file_utils.append_to_file(pump)
+
                 # Turn off pump
                 relayCarbPump.off()
                 debug_utils.debug_message(f"Carb pump ON for {config['PROD']['PUMP_OFF_TIME']} seconds", logging.INFO)

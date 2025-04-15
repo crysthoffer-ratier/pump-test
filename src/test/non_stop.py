@@ -1,8 +1,16 @@
 import time
 import random
 import logging
-from utils import debug_utils, misc
 
+import sys
+import os
+
+# Add the src directory to the sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
+
+# Now you can import from the utils directory
+from utils.file_utils import append_to_file
+from utils.debug_utils import debug_message
 
 def non_stop_test():
     try:
@@ -17,7 +25,7 @@ def non_stop_test():
             end_time - start_time
         ) * 1000  # Convert seconds to milliseconds
 
-        debug_utils.debug_message(
+        debug_message(
             [
                 "CARBONATION",
                 start_time,
@@ -28,5 +36,21 @@ def non_stop_test():
             ],
             logging.INFO,
         )
+        
+        append_to_file(
+            [
+                "CARBONATION",
+                start_time,
+                end_time,
+                f"{elapsed_time_ms:.4f}",
+                flow_rate,
+                total_volume,
+            ]
+        )
+        time.sleep(5)
     except Exception as e:
-        debug_utils.debug_message(f"{e}", logging.ERROR)
+        debug_message(f"{e}", logging.ERROR)
+
+
+while True:
+    non_stop_test()
