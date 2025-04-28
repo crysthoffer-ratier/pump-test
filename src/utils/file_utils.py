@@ -43,6 +43,7 @@ def _create_file(file_path: Path) -> bool:
                 "elapsed_time_ms",
                 "flowrate",
                 "volume",
+                "total_volume"
             ]
             writer = csv.writer(file)
             writer.writerow(csv_header)  # Write the header
@@ -79,7 +80,10 @@ def csv_to_json(file_path: Path) -> bool:
 
 
 def append_to_file(data: list) -> None:
-    file_path = path / f"{datetime.now().strftime('%Y-%m-%d')}.csv"
+    #file_path = path / f"{datetime.now().strftime('%Y-%m-%d')}.csv"
+
+    script_dir = Path(__file__).resolve().parent.parent.parent  # This will give the directory inside src
+    file_path = script_dir / "data" / f"{datetime.now().strftime('%Y-%m-%d')}.csv"
 
     run_file_checks()
 

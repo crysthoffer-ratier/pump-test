@@ -1,14 +1,16 @@
 {
     "PROD": {
         "DEBUG_MODE": false,
-        "PUMP_ON_TIME": 3,
-        "PUMP_OFF_TIME": 2,
-        "VOLUME": 14
+        "PUMP_ON_TIME": 30,
+        "PUMP_OFF_TIME": 15,
+        "VOLUME": 14,
+        "CHARLES_AUSTEN_PUMP": 2775,
+        "AQUATEC_PUMP": 820
     },
     "TEST": {
         "DEBUG_MODE": true,
-        "PUMP_ON_TIME": 3,
-        "PUMP_OFF_TIME": 2,
+        "PUMP_ON_TIME": 30,
+        "PUMP_OFF_TIME": 15,
         "VOLUME": 14
     }
 }

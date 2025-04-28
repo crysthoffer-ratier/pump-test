@@ -1,24 +1,20 @@
 import logging
 from typing import Any
 
-from utils import misc as misc
+from utils import misc  # Remove `as misc` if not used
 
 DEBUG_MODE = True
-# DEBUG_MODE = False
 
-# Create a logger
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)  # Always set this high to allow all messages
+logger.setLevel(logging.DEBUG if DEBUG_MODE else logging.INFO)
 
-# Set up handler and formatter
-handler = logging.StreamHandler()
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 
-# Attach the handler only if DEBUG_MODE is True
-if DEBUG_MODE:
+# Avoid adding multiple handlers
+if not logger.hasHandlers():
     logger.addHandler(handler)
-
 
 def debug_message(msg: Any, lvl: int) -> None:
     logger.log(lvl, msg)
